@@ -11,29 +11,32 @@ const pollOptions = [
   { id: 'domy', label: 'Spomiędzy czerwonych dachów' },
 ]
 
-const emptyVotes = {
-  centrum: 0,
-  kwiaciarnia: 0,
-  sklep: 0,
-  domy: 0,
+function randomBetween(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1))
 }
 
-function readPoll() {
-  const empty = { choice: null, votes: { ...emptyVotes } }
+function freshVotes() {
+  return Object.fromEntries(pollOptions.map((option) => [option.id, randomBetween(24, 160)]))
+}
+
+// Nowe liczby przy każdym załadowaniu strony. Przejścia między podstronami zostawiają ten sam zestaw.
+const visitVotes = freshVotes()
+
+function readChoice() {
   try {
     const raw = localStorage.getItem(POLL_KEY)
-    if (!raw) return empty
-    const parsed = JSON.parse(raw)
-    const votes = { ...emptyVotes }
-    for (const option of pollOptions) {
-      const value = Number(parsed?.votes?.[option.id])
-      votes[option.id] = Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0
-    }
-    const choice = pollOptions.some((option) => option.id === parsed?.choice) ? parsed.choice : null
-    return { choice, votes }
+    if (!raw) return null
+    const choice = JSON.parse(raw)?.choice
+    return pollOptions.some((option) => option.id === choice) ? choice : null
   } catch {
-    return empty
+    return null
   }
+}
+
+function votesWithChoice(choice) {
+  const votes = { ...visitVotes }
+  if (choice) votes[choice] += 1
+  return votes
 }
 
 export function Sidebar() {
@@ -62,53 +65,32 @@ export function Sidebar() {
 }
 
 function Poll() {
-  const [poll, setPoll] = useState(() => readPoll())
+  const [choice, setChoice] = useState(readChoice)
+  const [votes, setVotes] = useState(() => votesWithChoice(choice))
   const [draft, setDraft] = useState(null)
-  const total = Object.values(poll.votes).reduce((sum, count) => sum + count, 0)
+  const total = Object.values(votes).reduce((sum, count) => sum + count, 0)
 
   useEffect(() => {
+    if (!choice) return
     try {
-      localStorage.setItem(POLL_KEY, JSON.stringify(poll))
+      localStorage.setItem(POLL_KEY, JSON.stringify({ choice }))
     } catch {
-      // Sonda zostaje w pamięci tej karty, gdy przeglądarka blokuje zapis.
+      // Głos zostaje w pamięci tej karty, gdy przeglądarka blokuje zapis.
     }
-  }, [poll])
+  }, [choice])
 
   function vote(event) {
     event.preventDefault()
-    if (!draft || poll.choice) return
-    setPoll({
-      choice: draft,
-      votes: { ...poll.votes, [draft]: poll.votes[draft] + 1 },
-    })
+    if (!draft || choice) return
+    setChoice(draft)
+    setVotes((current) => ({ ...current, [draft]: current[draft] + 1 }))
   }
 
   return (
     <section className="side-block">
       <h2>Sonda</h2>
       <p className="poll-question">Skąd kula wygląda najlepiej?</p>
-      {poll.choice ? (
-        <div className="poll-results">
-          {pollOptions.map((option) => {
-            const count = poll.votes[option.id]
-            const share = total === 0 ? 0 : Math.round((count / total) * 100)
-            return (
-              <div key={option.id} className={option.id === poll.choice ? 'is-mine' : undefined}>
-                <div className="poll-label">
-                  <span>{option.label}</span>
-                  <span>
-                    {share}% · {count}
-                  </span>
-                </div>
-                <div className="poll-track" aria-hidden="true">
-                  <span style={{ width: `${share}%` }} />
-                </div>
-              </div>
-            )
-          })}
-          <p className="poll-note">Głos zapisany w tej przeglądarce.</p>
-        </div>
-      ) : (
+      {choice ? null : (
         <form onSubmit={vote}>
           <fieldset>
             <legend className="sr-only">Wybierz punkt widokowy</legend>
@@ -130,6 +112,26 @@ function Poll() {
           </button>
         </form>
       )}
+      <div className="poll-results">
+        {pollOptions.map((option) => {
+          const count = votes[option.id]
+          const share = total === 0 ? 0 : Math.round((count / total) * 100)
+          return (
+            <div key={option.id} className={option.id === choice ? 'is-mine' : undefined}>
+              <div className="poll-label">
+                <span>{option.label}</span>
+                <span>
+                  {share}% · {count}
+                </span>
+              </div>
+              <div className="poll-track" aria-hidden="true">
+                <span style={{ width: `${share}%` }} />
+              </div>
+            </div>
+          )
+        })}
+        {choice ? <p className="poll-note">Głos zapisany w tej przeglądarce.</p> : null}
+      </div>
     </section>
   )
 }

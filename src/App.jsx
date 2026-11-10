@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Route, Routes, useLocation } from 'react-router-dom'
+import { ClickNotice } from './components/ClickNotice'
 import { Article } from './pages/Article'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
@@ -8,6 +9,7 @@ import { Section } from './pages/Section'
 export default function App() {
   return (
     <>
+      <ClickNotice />
       <ScrollToTop />
       <Routes>
         <Route path="/" element={<Home />} />

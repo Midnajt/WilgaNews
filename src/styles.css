@@ -697,6 +697,47 @@ button[type="submit"]:disabled {
   }
 }
 
+.click-toasts {
+  --toastify-color-dark: #000;
+  --toastify-text-color-dark: #fff;
+  --toastify-color-info: #fff;
+  --toastify-icon-color-info: #fff;
+  --toastify-color-progress-info: #fff;
+  --toastify-font-family: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --toastify-toast-width: min(440px, calc(100vw - 24px));
+  --toastify-toast-bd-radius: 0;
+  --toastify-toast-shadow: none;
+  --toastify-z-index: 30;
+}
+
+.click-toasts .Toastify__toast {
+  align-items: flex-start;
+  background: #000;
+  color: #fff;
+  border: 1px solid #fff;
+}
+
+.click-toasts .Toastify__close-button {
+  color: #fff;
+  opacity: 1;
+}
+
+.click-toast {
+  display: grid;
+  grid-template-columns: 7.6em minmax(0, 1fr);
+  gap: 2px 12px;
+  margin: 0;
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.45;
+  font-variant-ligatures: none;
+}
+
+.click-toast .is-strong {
+  font-weight: 700;
+  text-shadow: 0.45px 0 currentColor;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .story-card .media::after,
   .hero .media::after {

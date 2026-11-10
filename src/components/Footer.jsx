@@ -4,7 +4,7 @@ export function Footer() {
       <div className="footer-inner">
         <p>
           Informacje o obiekcie, cytowane osoby i wyniki sondy są fikcją. Strona została
-          utworzona w celach badawczych. To strona statyczna, nie zbiera żadnych informacji,
+          utworzona w celach demonstracyjnych. To strona statyczna, nie zbiera żadnych informacji,
           jest udostępniona na licencji{' '}
           <a href="https://github.com/Midnajt/WilgaNews/blob/main/LICENSE">MIT</a> i
           przechowywana na{' '}
