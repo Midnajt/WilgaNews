@@ -662,6 +662,42 @@ button[type="submit"]:disabled {
   }
 }
 
+.click-toasts {
+  --toastify-color-info: var(--red);
+  --toastify-icon-color-info: var(--red);
+  --toastify-color-progress-info: var(--red);
+  --toastify-text-color-light: var(--ink);
+  --toastify-font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  --toastify-toast-width: min(400px, calc(100vw - 24px));
+  --toastify-toast-bd-radius: 0;
+  --toastify-z-index: 30;
+}
+
+.click-toasts .Toastify__toast {
+  align-items: flex-start;
+}
+
+.click-toasts .Toastify__toast-icon,
+.click-toasts .Toastify__close-button {
+  margin-top: 2px;
+}
+
+.click-toast {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.click-toast span:first-child {
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .story-card .media::after,
   .hero .media::after {

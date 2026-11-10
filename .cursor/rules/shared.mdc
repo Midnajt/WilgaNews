@@ -1,0 +1,32 @@
+---
+description: Założenia i działanie portalu Radio ZET o kuli w Wildze
+alwaysApply: true
+---
+
+# Radio ZET — Wilga
+
+Fikcyjny portal badawczy. Wygląda jak czerwono-biały serwis informacyjny, ale każdy news dotyczy srebrnej kuli w Wildze (08-470, powiat garwoliński, Mazowsze).
+
+## Założenia treści
+
+- Ton: ciekawość i entuzjazm. Bez paniki, alarmu i dramatycznych wezwań.
+- Osoby i cytaty są wymyślone. Nie używać prawdziwych nazwisk, polityków ani urzędników. Zdjęcie posesji nie nazywa właścicieli.
+- Geografia i historia Wilgi są prawdziwe i służą tylko jako tło: Wisła i rzeka Wilga, letnisko około 60 km od Warszawy, kupno majątku przez Marię Ludwikę i Stanisława Kostkę Rostworowskich 4 czerwca 1927, osiedle „Wilga nad Wisłą. Osiedle Klimatyczno-Wypoczynkowe” z 1929, plan Andrzeja Boniego, zgoda wojewody lubelskiego Antoniego Remiszewskiego. Historycznym postaciom nie wkładać w usta słów o kuli.
+- Daty newsów są zawsze z bieżącego dnia. Godzin nie wpisywać ręcznie: `buildTimes` w `src/data/articles.js` liczy je przy starcie, od 6:08 (albo od początku doby, gdy jest wcześniej) do kilku minut wstecz.
+- Stopka na każdej stronie: informacje o obiekcie, cytowane osoby i wyniki sondy są fikcją; strona powstała w celach badawczych.
+- Pogoda to ramka ilustracyjna, nie komunikat IMGW. Sonda trzyma głos tylko w `localStorage` pod kluczem `wilga-news-poll-v1`.
+
+## Jak działa
+
+- Vite + React. W `vite.config.js` jest `base: '/WilgaNews/'`. React Router bierze `basename` z `import.meta.env.BASE_URL`.
+- Trasy: `/`, `/wiadomosci`, `/wilga`, `/obiekt`, `/artykul/:slug`.
+- Teksty, kategorie i zdjęcia są w `src/data/articles.js`. Zdjęcia: `src/assets/centrum.png`, `kwiaciarnia.png`, `sklep.png`, `domy.png`.
+- Dział „Wiadomości” pokazuje wszystkie newsy. „Wilga” i „Obiekt” filtrują pole `category`.
+- Układ: czerwony pasek `#E10600` ze znakiem ZET, bohater, siatka relacji, prawa kolumna Najnowsze / sonda / pogoda. Znak i `public/favicon.svg` są narysowane w projekcie, nie pobrane z serwisu radia.
+- Lokalnie: `npm run dev`, adres http://localhost:5173/WilgaNews/
+- Publikacja: repozytorium https://github.com/Midnajt/WilgaNews.git, docelowy adres https://midnajt.github.io/WilgaNews/. Workflow GitHub Pages nie jest jeszcze dodany.
+
+## Przy zmianach
+
+- Nowy news dopisuj do `templates` w `src/data/articles.js`. Godzinę zostaw generatorowi.
+- Nie dodawaj odtwarzacza radia, numeru telefonu ani cytatów prawdziwych osób.
