@@ -72,11 +72,15 @@ function formatNow() {
   }).format(new Date())
 }
 
+const DWELL_MS = 30_000
+
 export function ClickNotice() {
   useEffect(() => {
+    const readyAt = Date.now() + DWELL_MS
     loadIp()
 
     async function onClick(event) {
+      if (Date.now() < readyAt) return
       const what = describeClick(event.target)
       if (!what) return
       const time = formatNow()
@@ -84,13 +88,18 @@ export function ClickNotice() {
       const ip = await loadIp()
       toast.info(
         <p className="click-toast">
-          <span>Godzina: {time}</span>
-          <span>Kliknięto: {what}</span>
-          <span>Urządzenie: {device}</span>
-          <span>Przeglądarka: {browser}</span>
-          <span>Adres IP: {ip}</span>
+          <span>godzina</span>
+          <span>{time}</span>
+          <span>klik</span>
+          <span>{what}</span>
+          <span>urządzenie</span>
+          <span className="is-strong">{device}</span>
+          <span>przeglądarka</span>
+          <span className="is-strong">{browser}</span>
+          <span>ip</span>
+          <span className="is-strong">{ip}</span>
         </p>,
-        { role: 'status' },
+        { role: 'status', icon: false },
       )
     }
 
@@ -106,7 +115,7 @@ export function ClickNotice() {
       limit={3}
       autoClose={6500}
       pauseOnHover
-      theme="light"
+      theme="dark"
       aria-label="Informacja o kliknięciu"
     />
   )
